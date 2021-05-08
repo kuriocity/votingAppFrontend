@@ -1,0 +1,28 @@
+body {
+  height: 100%;
+}
+html {
+  height: 100%;
+}
+#root {
+  height: 100%;
+}
+i {
+  position: relative;
+  bottom: 1.5px;
+  /* font-size: 1.2em; */
+  /* font-size: large; */
+}
+
+a.btn:active {
+  background-color: white;
+  color: black;
+  box-shadow: 0 5px #666;
+  transform: translateY(1.5px);
+  border: 1px solid;
+}
+
+.add-icon {
+  position: relative;
+  top: 4px;
+}
