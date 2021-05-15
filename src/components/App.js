@@ -29,7 +29,7 @@ const App = () => {
                     <Route path="/forgot-password" exact component={ForgotPassword} />
                     {/* <div> */}
                     <Route path="/" exact component={Home} />
-                    <Route path="/poll/:voterCode" exact component={Home} />
+                    <Route path="/poll/:voterCodeParams" exact component={Home} />
                     <Route path="/@:username" exact component={Profile} />
                     {/* </div> */}
                     <Route path="/create-poll" exact component={CreatePoll} />}

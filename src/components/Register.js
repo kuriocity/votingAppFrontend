@@ -17,6 +17,7 @@ const Register = () => {
         registerUser();
     }
     const registerUser = async () => {
+        console.log("RequestPayload ", { username, firstName, lastName, email, password });
         const response = await authentication.post("/register", { username, firstName, lastName, email, password })
         console.log('register', response);
 

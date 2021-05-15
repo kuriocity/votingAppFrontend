@@ -31,7 +31,7 @@ const ForgotPassword = () => {
         <div className="row h-100 align-items-center justify-content-center mx-0">
             <div className="col-3 ">
                 {mailSent ? <div className="alert alert-success" role="alert">
-                    A reset link has been sent to your registered email. Please use it to reset your password.
+                <i className="bi bi-check-circle"></i> A reset link has been sent to your registered email. Please use it to reset your password.
                 </div> : null}
                 <form onSubmit={onFormSubmit} className="d-grid shadow-lg p-3 mb-4  bg-white rounded   " method="POST">
                     <div className="mb-2">

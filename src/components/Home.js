@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import VotingPoll from './VotingPoll';
 import backend from '../apis/backend';
 import Navbar from './Navbar';
@@ -7,10 +7,23 @@ import { useParams } from 'react-router-dom';
 const Home = () => {
     const [voteCode, setVoteCode] = useState('');
     const [polls, setPolls] = useState([]);
-    const [isCodeValid, setIsCodeValid] = useState(true);
-    const { voterCode } = useParams();
+    const [pollQuestion, setPollQuestion] = useState('');
 
-    console.log("Params Voter Code", voterCode);
+    const [isCodeValid, setIsCodeValid] = useState(true);
+    const { voterCodeParams } = useParams();
+
+
+    useEffect(() => {
+        console.log("First Time Component Mount");
+        console.log("Params Voter Code", voterCodeParams);
+
+        if (voterCodeParams) {
+            setVoteCode(voterCodeParams);
+            getPolls(voterCodeParams);
+
+        }
+    }, []);
+
     const onFormClick = (event) => {
         event.preventDefault();
     }
@@ -36,6 +49,7 @@ const Home = () => {
             console.log('Reponse :', response);
             if (response) {
                 setPolls(response.data.polls);
+                setPollQuestion(response.data.pollQuestion);
                 setIsCodeValid(true);
 
             }
@@ -52,19 +66,20 @@ const Home = () => {
         <div>
             <Navbar />
             <div className="form-floating mt-5 mb-3 w-50 mx-auto">
-                <input autoFocus onChange={onInputChange} type="text" value={voteCode ? voteCode : (voterCode ? voterCode : '')} className="form-control" id="floatingPassword" />
-                <label htmlFor="floatingPassword">Enter Voter Code</label>
+                <input autoFocus onChange={onInputChange} type="text" value={voteCode} className="form-control" id="searchPoll" />
+                <label htmlFor="searchPoll">Enter Voter Code</label>
             </div>
-            {isCodeValid ? null : <div className="alert alert-warning alert-dismissible fade show w-50 mx-auto" role="alert">
-                Invalid Voter Code!
-               <button type="button" className="btn-close " data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>}
+            {
+                isCodeValid ? null : <div className="alert alert-warning alert-dismissible fade show w-50 mx-auto" role="alert">
+                    <i className="bi bi-exclamation-triangle "></i> Invalid Voter Code!
+                    <button type="button" className="btn-close " data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
             <div className="w-25 mx-auto">
-                {voteCode}
-                <VotingPoll voteCode={voteCode} polls={polls} isCodeValid={isCodeValid} />
+                <VotingPoll voteCode={voteCode} polls={polls} getPolls={getPolls} pollQuestion={pollQuestion} isCodeValid={isCodeValid} />
             </div>
 
-            {voterCode}
+
         </div>
 
     );
