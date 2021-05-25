@@ -76,7 +76,7 @@ const Home = () => {
                 </div>
             }
             <div className="w-25 mx-auto">
-                <VotingPoll voteCode={voteCode} polls={polls} getPolls={getPolls} pollQuestion={pollQuestion} isCodeValid={isCodeValid} />
+                <VotingPoll voteCode={voteCode} polls={polls} getPolls={getPolls} setPolls={setPolls} pollQuestion={pollQuestion} isCodeValid={isCodeValid} />
             </div>
 
 

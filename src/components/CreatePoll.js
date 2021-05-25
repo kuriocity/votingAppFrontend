@@ -18,6 +18,7 @@ const CreatePoll = () => {
     const [pollQuestion, setPollQuestion] = useState('');
     const [pollCreated, setPollCreated] = useState(false);
     const [voterCodeId, setVoterCodeId] = useState('');
+    const [uniquePollOptions, setUniquePollOptions] = useState(true);
 
     const myRef = useRef(null)
 
@@ -25,10 +26,11 @@ const CreatePoll = () => {
     const executeFocus = () => myRef.current && myRef.current.focus();
 
     useEffect(() => {
+        document.title = "Create Poll"
         setNewOptions([
-            <CreatePollItem key={0} index={0} isFocused={false} onInputChange={onInputChange} />,
-            <CreatePollItem key={1} index={1} isFocused={false} onInputChange={onInputChange} />,
-            <CreatePollItem key={2} index={2} isFocused={false} onInputChange={onInputChange} />]);
+            <CreatePollItem key={0} index={0} isFocused={false} onInputChange={onInputChange} required={true} />,
+            <CreatePollItem key={1} index={1} isFocused={false} onInputChange={onInputChange} required={true} />,
+            <CreatePollItem key={2} index={2} isFocused={false} onInputChange={onInputChange} required={true} />]);
 
         console.log("First Time Load", newOptions);
         //myRef.current.focus();
@@ -37,11 +39,21 @@ const CreatePoll = () => {
         console.log(myRef.current);
     }, []);
 
+    function checkIfArrayIsUnique(myArray) {
+        return myArray.length === new Set(myArray).size;
+    }
+
     const onFormSubmit = (event) => {
         event.preventDefault();
         console.log(pollQuestion);
         console.log(newOptionsValue);
-        const voterCode = Math.floor(Math.random() * 1000) + '';
+
+        if (!checkIfArrayIsUnique(newOptionsValue)) {
+            return setUniquePollOptions(false);
+        } else {
+            setUniquePollOptions(true);
+        }
+        const voterCode = Math.floor(Math.random() * 10000) + '';
         setVoterCodeId(voterCode)
         submitPoll(voterCode);
         console.log({ voterCode, polls: newOptionsValue.map(name => { return { name } }) });
@@ -51,7 +63,7 @@ const CreatePoll = () => {
         const polls = newOptionsValue.map(name => { return { name } });
         const requestBody = { voterCode, pollQuestion, polls };
         console.log("requestBody", requestBody);
-        const response = await backend.post('/polls', requestBody).catch(error => {
+        const response = await backend.post('/polls', requestBody, { headers: { "Authorization": `Bearer ${window.localStorage.getItem("accessToken")}` } }).catch(error => {
             console.log("Error Respone", error.response.data);
         });
         if (response) {
@@ -105,6 +117,13 @@ const CreatePoll = () => {
                     <hr />
                     <button type="button" onClick={onFormSubmit} className="btn btn-success bg-gradient shadow px-3 py-2 mb-3">Submit your poll</button>
                 </form>
+                {
+                    !uniquePollOptions ?
+                        <div className="alert alert-danger bg-gradient shadow-sm border alert-dismissible fade show" role="alert">
+                            All the poll options should be <strong>unique!</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div> : null
+                }
                 {pollCreated ?
                     <div className="alert alert-success shadow-sm border alert-dismissible fade show" role="alert">
                         <h4 className="alert-heading"><i className="bi bi-check-circle"></i> Success!</h4>

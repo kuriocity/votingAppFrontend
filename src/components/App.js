@@ -7,6 +7,7 @@ import Home from './Home';
 import Navbar from './Navbar';
 import Profile from './Profile';
 import CreatePoll from './CreatePoll';
+import PollResult from './PollResult';
 import './style.css'
 const App = () => {
 
@@ -30,6 +31,7 @@ const App = () => {
                     {/* <div> */}
                     <Route path="/" exact component={Home} />
                     <Route path="/poll/:voterCodeParams" exact component={Home} />
+                    <Route path="/poll/results/:voterCodeParams" exact component={PollResult} />
                     <Route path="/@:username" exact component={Profile} />
                     {/* </div> */}
                     <Route path="/create-poll" exact component={CreatePoll} />}

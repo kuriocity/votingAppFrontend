@@ -1,7 +1,24 @@
 import React, { useState } from 'react';
 import { BrowserRouter, HashRouter, MemoryRouter, Route, Link, useHistory, Redirect } from 'react-router-dom';
+import authentication from '../apis/authentication';
 
 const NavBar = () => {
+    const history = useHistory();
+
+    const logout = async () => {
+        const response = await authentication.delete("/logout", {
+            "token": window.localStorage.getItem("accessToken")
+        }).catch(error => {
+            console.log(error.response.data);
+        });
+        if (response) {
+            console.log('logout', response);
+
+            window.localStorage.removeItem("accessToken");
+
+            history.push('/login');
+        }
+    }
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm mb-3">
@@ -14,7 +31,7 @@ const NavBar = () => {
                 </button>
 
                 <div className="collapse navbar-collapse " id="navbarSupportedContent">
-                    <Link to='/create-poll' className="btn btn-dark bg-gradient shadow ms-auto mx-2 ps-2 pt-1" type="submit">
+                    <Link to='/create-poll' id='create-poll' className="btn btn-dark bg-gradient shadow ms-auto mx-2 ps-2 pt-1" type="submit">
                         {/* <i className="align-top bi bi-plus fst-normal">Create Poll </i> */}
                         {/* <i className="fas fa-plus me-2 "> </i>Create Poll */}
                         <span className="material-icons md-24 fs-5 add-icon me-1">add</span><span>Create Poll</span>
@@ -33,11 +50,11 @@ const NavBar = () => {
                         <li className="nav-item dropdown border-start">
                             <a className="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Profile Name</a>
-                            <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <ul className="dropdown-menu shadow " aria-labelledby="navbarDropdown">
                                 <li><Link className="dropdown-item" to="">Profile</Link></li>
                                 <li><Link className="dropdown-item" to="">Check Votes</Link></li>
                                 <li><hr className="dropdown-divider" /></li>
-                                <li><Link className="dropdown-item" to="/login">Logout</Link></li>
+                                <li><Link className="dropdown-item" onClick={logout} >Logout</Link></li>
                             </ul>
                         </li>
 

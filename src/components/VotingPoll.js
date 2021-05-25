@@ -3,7 +3,7 @@ import VotingPollItem from './VotingPollItem';
 import backend from '../apis/backend';
 
 
-const VotingPoll = ({ voteCode, polls, getPolls, pollQuestion, isCodeValid }) => {
+const VotingPoll = ({ voteCode, polls, getPolls, setPolls, pollQuestion, isCodeValid }) => {
     const arr = [{ id: 1, name: 'Bjp' }, { id: 2, name: 'Shiv Sena' }, { id: 3, name: 'Aaam Aadmi Party' }];
 
     const [pollClicked, setPollClicked] = useState('');
@@ -21,31 +21,37 @@ const VotingPoll = ({ voteCode, polls, getPolls, pollQuestion, isCodeValid }) =>
         console.log("Total votes set " + totalVotes);
     }, [polls]);
 
-    const onFormSubmit = (event) => {
+    const onFormSubmit = async (event) => {
         event.preventDefault();
 
         console.log('This is the poll item selected ', pollClicked);
         if (pollClicked) {
             const index = polls.findIndex(poll => poll.name === pollClicked)
             setPollClickedIndex(index);
-            submitVote(index);
-            setVoteSubmitted(true);
-
-            setTimeout(() => {
-                setVoteSubmitted(false);
-            }, 2000);
+            const submittedResponse = await submitVote(index);
+            console.log("%csubmittedResponse " + submittedResponse, 'background: #222; color: #bada55');
+            if (submittedResponse) {
+                setVoteSubmitted(true);
+                setTimeout(() => {
+                    setVoteSubmitted(false);
+                }, 2000);
+            }
         }
     }
 
     const submitVote = async (index) => {
         console.log('Submitting your vote... ', pollClicked);
         var pollVotedObject = polls
-        const response = await backend.patch("/polls/" + voteCode + "/vote/" + index, { polls: pollVotedObject }).catch(error => {
-            console.log("Error Respone", error.response.data);
-        });
+        const response = await backend.patch("/polls/" + voteCode + "/vote/" + index, { polls: pollVotedObject },
+            { headers: { "Authorization": `Bearer ${window.localStorage.getItem("accessToken")}` } })
+            .catch(error => {   
+                console.log("Error Respone", error.response.data);
+            });
 
         console.log('Voted Respone', response);
-        getPolls(voteCode);
+        //getPolls(voteCode);
+        setPolls(response.data.polls);
+        return response;
     }
 
     const renderedList = polls.map((pollItem, index) => {
@@ -75,7 +81,7 @@ const VotingPoll = ({ voteCode, polls, getPolls, pollQuestion, isCodeValid }) =>
 
                         {renderedList}
 
-                        <button type="submit" class="btn btn-success bg-gradient shadow my-3">Submit Vote</button>
+                        <button type="submit" class="btn btn-success bg-gradient shadow my-3 py-2 px-3  ">Submit Vote</button>
                     </form> : null
             }
             {
@@ -86,17 +92,6 @@ const VotingPoll = ({ voteCode, polls, getPolls, pollQuestion, isCodeValid }) =>
             }
 
 
-
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" />
-                <label class="btn btn-outline-primary" for="btnradio1">Radio 1</label>
-
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" />
-                <label class="btn btn-outline-primary" for="btnradio2">Radio 2</label>
-
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" />
-                <label class="btn btn-outline-primary" for="btnradio3">Radio 3</label>
-            </div>
 
 
         </div>
