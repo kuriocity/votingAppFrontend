@@ -38,7 +38,7 @@ const CreatePoll = () => {
         executeFocus();
         console.log(myRef.current);
     }, []);
-
+    
     function checkIfArrayIsUnique(myArray) {
         return myArray.length === new Set(myArray).size;
     }
