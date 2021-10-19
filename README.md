@@ -5,3 +5,5 @@
 
 #### Frontend : [Repository Link](https://github.com/kuriocity/votingAppFrontend)
 #### Backend : [Repository Link](https://github.com/kuriocity/votingAppBackend)
+
+![voting app](https://github.com/kuriocity/votingAppFrontend/blob/main/voting-app.gif)
